@@ -26,7 +26,7 @@ class MudfishManipulator(private val router: Router) : VpnManipulator {
 	}
 
 	private fun turnOnOrOffMudfish(toTurnOn: Boolean) {
-		val sessionId = loginToRouter()
+		val sessionId = getSessionId()
 
 		val httpRequest = HttpRequest.newBuilder(URI("http://10.0.0.1:8282/do/mudfish/${if (toTurnOn) "start" else "stop"}"))
 			.header("Cookie", "efm_session_id=$sessionId")
@@ -54,10 +54,7 @@ class MudfishManipulator(private val router: Router) : VpnManipulator {
 		}
 	}
 
-	/**
-		* @return The session ID
-	 */
-	private fun loginToRouter(): String {
+	private fun login(): HttpResponse<String> {
 		val requestBody = "init_status=1&captcha_on=0&username=${router.username}&passwd=${router.password}"
 
 		val httpRequest = HttpRequest.newBuilder()
@@ -67,7 +64,11 @@ class MudfishManipulator(private val router: Router) : VpnManipulator {
 			.POST(BodyPublishers.ofString(requestBody))
 			.build()
 
-		val response = HttpClient.newHttpClient().send(httpRequest, BodyHandlers.ofString())
+		return HttpClient.newHttpClient().send(httpRequest, BodyHandlers.ofString())
+	}
+
+	private fun getSessionId(): String {
+		val response = login()
 
 		val responseStatusCode = response.statusCode()
 		val responseBody = response.body()
