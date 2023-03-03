@@ -10,27 +10,23 @@ import java.time.temporal.ChronoUnit
 
 class ConnectivityChecker {
 	companion object {
-		fun check(): Boolean {
-			var success: Boolean
-
+		fun needsVpn(): Boolean {
 			val httpRequest = HttpRequest.newBuilder(URI("https://www.jandi.com/"))
 				.timeout(Duration.of(10, ChronoUnit.SECONDS))
 				.GET()
 				.build()
 
-			try {
+			return try {
 				val statusCode = HttpClient.newHttpClient()
 					.send(httpRequest) { BodySubscribers.discarding() }
 					.statusCode()
 
 				println("statusCode: $statusCode")
-				success = statusCode < 400
+				statusCode >= 400
 			} catch (e: HttpConnectTimeoutException) {
 				e.printStackTrace()
-				success = false
+				true
 			}
-
-			return success
 		}
 	}
 }
