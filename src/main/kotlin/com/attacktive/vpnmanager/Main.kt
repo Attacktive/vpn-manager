@@ -1,5 +1,10 @@
 package com.attacktive.vpnmanager
 
-fun main() {
-	println("Hello world!")
+import com.attacktive.vpnmanager.connectivity.ConnectivityChecker
+
+fun main(vararg args: String) {
+	println("args: ${args.joinToString(", ")}")
+
+	val isConnected = ConnectivityChecker.check()
+	println("isConnected: $isConnected")
 }
