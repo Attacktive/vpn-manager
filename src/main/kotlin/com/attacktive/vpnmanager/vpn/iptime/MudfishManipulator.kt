@@ -2,6 +2,7 @@ package com.attacktive.vpnmanager.vpn.iptime
 
 import com.attacktive.vpnmanager.vpn.VpnManipulator
 import com.attacktive.vpnmanager.vpn.VpnStatus
+import org.slf4j.LoggerFactory
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpConnectTimeoutException
@@ -11,6 +12,8 @@ import java.net.http.HttpResponse
 import java.net.http.HttpResponse.BodyHandlers
 
 class MudfishManipulator(private val router: Router): VpnManipulator {
+	private val logger = LoggerFactory.getLogger(MudfishManipulator::class.java)
+
 	private var vpnStatus = VpnStatus.UNKNOWN
 
 	override fun turnOn() {
@@ -38,10 +41,9 @@ class MudfishManipulator(private val router: Router): VpnManipulator {
 				.send(httpRequest) { HttpResponse.BodySubscribers.discarding() }
 				.statusCode()
 
-			println("statusCode: $statusCode")
 			statusCode < 400
 		} catch (e: HttpConnectTimeoutException) {
-			e.printStackTrace()
+			logger.error(e.message, e)
 			false
 		}
 
@@ -51,6 +53,8 @@ class MudfishManipulator(private val router: Router): VpnManipulator {
 			} else {
 				VpnStatus.OFF
 			}
+		} else {
+			logger.error("Failed to ${if (toTurnOn) "start" else "stop"} the VPN.")
 		}
 	}
 
@@ -70,13 +74,8 @@ class MudfishManipulator(private val router: Router): VpnManipulator {
 	private fun getSessionId(): String {
 		val response = login()
 
-		val responseStatusCode = response.statusCode()
-		val responseBody = response.body()
-
-		println("[$responseStatusCode] responseBody: $responseBody")
-
 		return Regex("^ *setCookie\\(['\"]([0-9a-z]{16})['\"]\\).*$", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))
-			.find(responseBody)!!
+			.find(response.body())!!
 			.groupValues[1]
 	}
 }

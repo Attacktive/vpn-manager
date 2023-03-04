@@ -7,8 +7,11 @@ import com.attacktive.vpnmanager.vpn.iptime.MudfishManipulator
 import com.attacktive.vpnmanager.vpn.iptime.Router
 import org.quartz.Job
 import org.quartz.JobExecutionContext
+import org.slf4j.LoggerFactory
 
 class VpnManagingJob: Job {
+	private val logger = LoggerFactory.getLogger(VpnManagingJob::class.java)
+
 	override fun execute(context: JobExecutionContext) {
 		val username = context.mergedJobDataMap.getString("username")
 		val password = context.mergedJobDataMap.getString("password")
@@ -18,14 +21,14 @@ class VpnManagingJob: Job {
 		mudfishManipulator.turnOff()
 
 		val needsVpn = ConnectivityChecker.needsVpn()
-		println("needsVpn: $needsVpn")
+		logger.debug("needsVpn: $needsVpn")
 
 		if (mudfishManipulator.status() != VpnStatus.ON) {
 			if (needsVpn) {
-				println("Seems like you need to connect to the VPN.")
+				logger.info("Seems like you need to connect to the VPN.")
 				mudfishManipulator.turnOn()
 			} else {
-				println("You don't need the VPN for now. 👍")
+				logger.info("You don't need the VPN for now. 👍")
 			}
 		}
 	}
