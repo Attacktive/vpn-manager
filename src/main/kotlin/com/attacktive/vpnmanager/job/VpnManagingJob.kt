@@ -1,7 +1,6 @@
 package com.attacktive.vpnmanager.job
 
 import com.attacktive.vpnmanager.connectivity.ConnectivityChecker
-import com.attacktive.vpnmanager.vpn.VpnStatus
 import com.attacktive.vpnmanager.vpn.iptime.Credentials
 import com.attacktive.vpnmanager.vpn.iptime.MudfishManipulator
 import com.attacktive.vpnmanager.vpn.iptime.Router
@@ -23,13 +22,11 @@ class VpnManagingJob: Job {
 		val needsVpn = ConnectivityChecker.needsVpn()
 		logger.debug("needsVpn: $needsVpn")
 
-		if (mudfishManipulator.status() != VpnStatus.ON) {
-			if (needsVpn) {
-				logger.info("Seems like you need to connect to the VPN.")
-				mudfishManipulator.turnOn()
-			} else {
-				logger.info("You don't need the VPN for now. 👍")
-			}
+		if (needsVpn) {
+			logger.info("Seems like you need to connect to the VPN. 😿")
+			mudfishManipulator.turnOn()
+		} else {
+			logger.info("You don't need the VPN for now. 👍")
 		}
 	}
 }

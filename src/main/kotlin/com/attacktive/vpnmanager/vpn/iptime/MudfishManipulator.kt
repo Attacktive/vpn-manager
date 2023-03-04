@@ -1,7 +1,6 @@
 package com.attacktive.vpnmanager.vpn.iptime
 
 import com.attacktive.vpnmanager.vpn.VpnManipulator
-import com.attacktive.vpnmanager.vpn.VpnStatus
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.net.http.HttpClient
@@ -14,18 +13,12 @@ import java.net.http.HttpResponse.BodyHandlers
 class MudfishManipulator(private val router: Router): VpnManipulator {
 	private val logger = LoggerFactory.getLogger(MudfishManipulator::class.java)
 
-	private var vpnStatus = VpnStatus.UNKNOWN
-
 	override fun turnOn() {
 		turnOnOrOffMudfish(true)
 	}
 
 	override fun turnOff() {
 		turnOnOrOffMudfish(false)
-	}
-
-	override fun status(): VpnStatus {
-		return vpnStatus
 	}
 
 	private fun turnOnOrOffMudfish(toTurnOn: Boolean) {
@@ -47,13 +40,7 @@ class MudfishManipulator(private val router: Router): VpnManipulator {
 			false
 		}
 
-		if (success) {
-			vpnStatus = if (toTurnOn) {
-				VpnStatus.ON
-			} else {
-				VpnStatus.OFF
-			}
-		} else {
+		if (!success) {
 			logger.error("Failed to ${if (toTurnOn) "start" else "stop"} the VPN.")
 		}
 	}
