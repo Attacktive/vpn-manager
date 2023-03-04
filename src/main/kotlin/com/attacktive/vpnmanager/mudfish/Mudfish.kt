@@ -1,4 +1,4 @@
-package com.attacktive.vpnmanager.vpn.iptime
+package com.attacktive.vpnmanager.mudfish
 
 import java.net.URI
 import java.net.http.HttpClient
@@ -10,8 +10,8 @@ import java.net.http.HttpResponse.BodyHandlers
 import com.attacktive.vpnmanager.configuration.ConfigurationsService
 import org.slf4j.LoggerFactory
 
-class MudfishManipulator {
-	private val logger = LoggerFactory.getLogger(MudfishManipulator::class.java)
+class Mudfish {
+	private val logger = LoggerFactory.getLogger(Mudfish::class.java)
 	private val configurations = ConfigurationsService.getConfigurations()
 
 	fun turnOn() {
