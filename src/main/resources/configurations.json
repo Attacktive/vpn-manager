@@ -1,0 +1,10 @@
+{
+	"cronExpression": "0 0/10 * * * ?",
+	"routerAddress": "10.0.0.1",
+	"testUrl": "https://youtrack.jetbrains.com/",
+	"testTimeout": "10s",
+	"credentials": {
+		"username": "username",
+		"password": "password"
+	}
+}

@@ -2,10 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	kotlin("jvm") version "1.8.10"
+	kotlin("plugin.serialization") version "1.8.10"
 }
 
 group = "com.attacktive"
-version = "1.0.1"
+version = "1.0.2"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
@@ -19,6 +20,7 @@ dependencies {
 	implementation("org.slf4j:slf4j-api:2.0.6")
 	implementation("ch.qos.logback:logback-core:1.4.5")
 	implementation("ch.qos.logback:logback-classic:1.4.5")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
 	testImplementation(kotlin("test"))
 }
