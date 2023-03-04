@@ -8,18 +8,17 @@ import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse
 import java.net.http.HttpResponse.BodyHandlers
 import com.attacktive.vpnmanager.configuration.ConfigurationsService
-import com.attacktive.vpnmanager.vpn.VpnManipulator
 import org.slf4j.LoggerFactory
 
-class MudfishManipulator: VpnManipulator {
+class MudfishManipulator {
 	private val logger = LoggerFactory.getLogger(MudfishManipulator::class.java)
 	private val configurations = ConfigurationsService.getConfigurations()
 
-	override fun turnOn() {
+	fun turnOn() {
 		turnOnOrOffMudfish(true)
 	}
 
-	override fun turnOff() {
+	fun turnOff() {
 		turnOnOrOffMudfish(false)
 	}
 
