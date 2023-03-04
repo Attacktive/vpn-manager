@@ -1,7 +1,5 @@
 package com.attacktive.vpnmanager.vpn.iptime
 
-import com.attacktive.vpnmanager.vpn.VpnManipulator
-import org.slf4j.LoggerFactory
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpConnectTimeoutException
@@ -9,9 +7,13 @@ import java.net.http.HttpRequest
 import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse
 import java.net.http.HttpResponse.BodyHandlers
+import com.attacktive.vpnmanager.configuration.ConfigurationsService
+import com.attacktive.vpnmanager.vpn.VpnManipulator
+import org.slf4j.LoggerFactory
 
-class MudfishManipulator(private val router: Router): VpnManipulator {
+class MudfishManipulator: VpnManipulator {
 	private val logger = LoggerFactory.getLogger(MudfishManipulator::class.java)
+	private val configurations = ConfigurationsService.getConfigurations()
 
 	override fun turnOn() {
 		turnOnOrOffMudfish(true)
@@ -24,7 +26,7 @@ class MudfishManipulator(private val router: Router): VpnManipulator {
 	private fun turnOnOrOffMudfish(toTurnOn: Boolean) {
 		val sessionId = getSessionId()
 
-		val httpRequest = HttpRequest.newBuilder(URI("http://10.0.0.1:8282/do/mudfish/${if (toTurnOn) "start" else "stop"}"))
+		val httpRequest = HttpRequest.newBuilder(URI("http://${configurations.routerAddress}:8282/do/mudfish/${if (toTurnOn) "start" else "stop"}"))
 			.header("Cookie", "efm_session_id=$sessionId")
 			.POST(BodyPublishers.noBody())
 			.build()
@@ -46,12 +48,13 @@ class MudfishManipulator(private val router: Router): VpnManipulator {
 	}
 
 	private fun login(): HttpResponse<String> {
-		val requestBody = "init_status=1&captcha_on=0&username=${router.credentials.username}&passwd=${router.credentials.password}"
+		val requestBody = "init_status=1&captcha_on=0&username=${configurations.credentials.username}&passwd=${configurations.credentials.password}"
+		logger.debug("Trying to login to ${configurations.routerAddress} with request body: \"$requestBody\"")
 
 		val httpRequest = HttpRequest.newBuilder()
-			.uri(URI(router.url))
+			.uri(URI("http://${configurations.routerAddress}/sess-bin/login_handler.cgi"))
 			.header("Content-Type", "application/x-www-form-urlencoded")
-			.header("Referer", "http://10.0.0.1/sess-bin/login_session.cgi?logout=1")
+			.header("Referer", "http://${configurations.routerAddress}/sess-bin/login_session.cgi?logout=1")
 			.POST(BodyPublishers.ofString(requestBody))
 			.build()
 
@@ -59,10 +62,11 @@ class MudfishManipulator(private val router: Router): VpnManipulator {
 	}
 
 	private fun getSessionId(): String {
-		val response = login()
+		val responseBody = login().body()
+		logger.debug("Response of the login request: $responseBody")
 
 		return Regex("^ *setCookie\\(['\"]([0-9a-z]{16})['\"]\\).*$", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))
-			.find(response.body())!!
+			.find(responseBody)!!
 			.groupValues[1]
 	}
 }
