@@ -25,6 +25,11 @@
 		</encoder>
 	</appender>
 
+	<logger name="org.quartz" level="warn">
+		<appender-ref ref="STDOUT"/>
+		<appender-ref ref="FILE"/>
+	</logger>
+
 	<root level="debug">
 		<appender-ref ref="STDOUT"/>
 		<appender-ref ref="FILE"/>
