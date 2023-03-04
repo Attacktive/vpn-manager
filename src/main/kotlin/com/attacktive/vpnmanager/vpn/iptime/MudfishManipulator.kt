@@ -10,7 +10,7 @@ import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse
 import java.net.http.HttpResponse.BodyHandlers
 
-class MudfishManipulator(private val router: Router) : VpnManipulator {
+class MudfishManipulator(private val router: Router): VpnManipulator {
 	private var vpnStatus = VpnStatus.UNKNOWN
 
 	override fun turnOn() {
@@ -55,7 +55,7 @@ class MudfishManipulator(private val router: Router) : VpnManipulator {
 	}
 
 	private fun login(): HttpResponse<String> {
-		val requestBody = "init_status=1&captcha_on=0&username=${router.username}&passwd=${router.password}"
+		val requestBody = "init_status=1&captcha_on=0&username=${router.credentials.username}&passwd=${router.credentials.password}"
 
 		val httpRequest = HttpRequest.newBuilder()
 			.uri(URI(router.url))
