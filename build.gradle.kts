@@ -15,6 +15,7 @@ repositories {
 dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.quartz-scheduler:quartz:2.3.2")
 
 	testImplementation(kotlin("test"))
 }
