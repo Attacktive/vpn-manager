@@ -14,6 +14,8 @@ private val logger = LoggerFactory.getLogger(Main::class.java)
 
 class Main {
 	companion object {
+		private const val DEFAULT_CRON_EXPRESSION = "0 0/30 * * * ?"
+
 		@JvmStatic
 		fun main(vararg args: String) {
 			if (args.size < 2) {
@@ -22,18 +24,21 @@ class Main {
 			}
 
 			logger.debug("args: ${args.joinToString(", ")}")
-			if (args.size > 3) {
-				logger.error("Other than the first 3 arguments are going to be ignored.")
+
+			val cronExpression = if (args.size == 2) {
+				logger.info("You provided no cron expression; using the default: \"$DEFAULT_CRON_EXPRESSION\"")
+
+				DEFAULT_CRON_EXPRESSION
+			} else {
+				if (args.size > 3) {
+					logger.error("Other than the first 3 arguments are going to be ignored.")
+				}
+
+				args[2]
 			}
 
 			val (username, password) = args
 			val credentials = Credentials(username, password)
-
-			val cronExpression = if (args.size == 3) {
-				args[2]
-			} else {
-				"0 0/30 * * * ?"
-			}
 
 			setupScheduler(credentials, cronExpression)
 		}
