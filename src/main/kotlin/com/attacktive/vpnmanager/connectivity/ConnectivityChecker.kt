@@ -1,5 +1,6 @@
 package com.attacktive.vpnmanager.connectivity
 
+import org.slf4j.LoggerFactory
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpConnectTimeoutException
@@ -10,8 +11,12 @@ import java.time.temporal.ChronoUnit
 
 class ConnectivityChecker {
 	companion object {
+		private const val DESTINATION_SITE = "https://www.jandi.com/"
+
+		private val logger = LoggerFactory.getLogger(ConnectivityChecker::class.java)
+
 		fun needsVpn(): Boolean {
-			val httpRequest = HttpRequest.newBuilder(URI("https://www.jandi.com/"))
+			val httpRequest = HttpRequest.newBuilder(URI(DESTINATION_SITE))
 				.timeout(Duration.of(10, ChronoUnit.SECONDS))
 				.GET()
 				.build()
@@ -21,10 +26,10 @@ class ConnectivityChecker {
 					.send(httpRequest) { BodySubscribers.discarding() }
 					.statusCode()
 
-				println("statusCode: $statusCode")
+				logger.debug("statusCode: $statusCode")
 				statusCode >= 400
 			} catch (e: HttpConnectTimeoutException) {
-				e.printStackTrace()
+				logger.info("${e.message} reaching $DESTINATION_SITE")
 				true
 			}
 		}
