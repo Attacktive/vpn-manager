@@ -1,8 +1,8 @@
 package com.attacktive.vpnmanager.mudfish
 
+import java.io.IOException
 import java.net.URI
 import java.net.http.HttpClient
-import java.net.http.HttpConnectTimeoutException
 import java.net.http.HttpRequest
 import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse
@@ -36,7 +36,7 @@ class Mudfish {
 				.statusCode()
 
 			statusCode < 400
-		} catch (e: HttpConnectTimeoutException) {
+		} catch (e: IOException) {
 			logger.error(e.message, e)
 			false
 		}
