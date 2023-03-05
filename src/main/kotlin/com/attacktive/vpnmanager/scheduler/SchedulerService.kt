@@ -1,6 +1,6 @@
 package com.attacktive.vpnmanager.scheduler
 
-import com.attacktive.vpnmanager.configuration.Configurations
+import com.attacktive.vpnmanager.configuration.ConfigurationsService
 import com.attacktive.vpnmanager.job.VpnManagingJob
 import org.quartz.CronScheduleBuilder
 import org.quartz.JobBuilder
@@ -9,7 +9,8 @@ import org.quartz.TriggerBuilder
 import org.quartz.impl.StdSchedulerFactory
 
 object SchedulerService {
-	fun setup(configurations: Configurations): Scheduler {
+	private val configurations = ConfigurationsService.getConfigurations()
+	fun setup(): Scheduler {
 		val jobDetail = JobBuilder.newJob(VpnManagingJob::class.java)
 			.withIdentity(System.currentTimeMillis().toString())
 			.build()

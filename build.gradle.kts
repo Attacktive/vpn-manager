@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.attacktive"
-version = "1.0.2"
+version = "1.1.0"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
@@ -34,7 +34,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Jar> {
 	manifest {
-		attributes["Main-Class"] = "com.attacktive.vpnmanager.Main"
+		attributes["Main-Class"] = "com.attacktive.vpnmanager.MainKt"
 	}
 }
 

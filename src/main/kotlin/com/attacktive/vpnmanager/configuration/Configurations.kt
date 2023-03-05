@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-data class Configurations(val cronExpression: String, val routerAddress: String, val testUrl: String, val testTimeout: String, val credentials: Credentials) {
+data class Configurations(val cronExpression: String, val testTimeout: String, val vpnToggleUrl: String, val authorization: String, val mudfishItems: List<MudfishItem>) {
 	@Transient
 	private var number = -1L
 
@@ -17,10 +17,6 @@ data class Configurations(val cronExpression: String, val routerAddress: String,
 		val (number, unit) = validate(testTimeout)
 		this.number = number
 		this.unit = unit
-	}
-
-	companion object {
-		fun default() = Configurations("0 0/30 * * * ?", "127.0.0.1", "http://localhost", "10s", Credentials("username", "password"))
 	}
 
 	fun testTimeoutDuration(): Duration {

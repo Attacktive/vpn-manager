@@ -1,10 +1,26 @@
 {
-	"cronExpression": "0 0/10 * * * ?",
-	"routerAddress": "10.0.0.1",
-	"testUrl": "https://youtrack.jetbrains.com/",
+	"cronExpression": "0 */10 * * * ?",
 	"testTimeout": "10s",
-	"credentials": {
-		"username": "username",
-		"password": "password"
-	}
+	"vpnToggleUrl": "https://api.mudfish.net/item/conf_onoff",
+	"authorization": "fixme:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJ1c2VybmFtZSI6ImR1bW15Iix0b2tlbiI6ImR1\nbW15In0K",
+	"mudfishItems": [
+		{
+			"name": "atlassian.com",
+			"testUrl": "https://www.atlassian.com/",
+			"iid": "fixme:200000",
+			"rid": "fixme:1000000"
+		},
+		{
+			"name": "jetbrains.com",
+			"testUrl": "https://youtrack.jetbrains.com/",
+			"iid": "fixme:200009",
+			"rid": "fixme:1000000"
+		},
+		{
+			"name": "netflix.com",
+			"testUrl": "https://www.netflix.com",
+			"iid": "fixme:200008",
+			"rid": "fixme:1000000"
+		}
+	]
 }
