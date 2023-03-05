@@ -6,7 +6,7 @@ import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 
 object ConfigurationsService {
-	private const val CONFIGURATIONS_FILE_NAME = "configurations.json"
+	private const val CONFIGURATIONS_FILE_NAME = "default-configurations.json"
 
 	private val logger = LoggerFactory.getLogger(ConfigurationsService::class.java)
 
