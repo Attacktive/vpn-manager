@@ -19,8 +19,16 @@ data class Configurations(val cronExpression: String, val testTimeout: String, v
 		this.unit = unit
 	}
 
-	fun testTimeoutDuration(): Duration {
-		return Duration.of(number, unit)
+	fun testTimeoutDuration(): Duration = Duration.of(number, unit)
+
+	fun mergeWith(other: NullableConfigurations): Configurations {
+		val cronExpression = other.cronExpression ?: this.cronExpression
+		val testTimeout = other.testTimeout ?: this.testTimeout
+		val vpnToggleUrl = other.vpnToggleUrl ?: this.vpnToggleUrl
+		val authorization = other.authorization ?: this.authorization
+		val mudfishItems = other.mudfishItems.ifEmpty { this.mudfishItems }
+
+		return Configurations(cronExpression, testTimeout, vpnToggleUrl, authorization, mudfishItems)
 	}
 
 	private fun validate(string: String): Pair<Long, ChronoUnit> {
