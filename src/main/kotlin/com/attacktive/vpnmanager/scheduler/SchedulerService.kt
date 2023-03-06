@@ -10,6 +10,7 @@ import org.quartz.impl.StdSchedulerFactory
 
 object SchedulerService {
 	private val configurations = ConfigurationsService.getConfigurations()
+
 	fun setup(): Scheduler {
 		val jobDetail = JobBuilder.newJob(VpnManagingJob::class.java)
 			.withIdentity(System.currentTimeMillis().toString())
