@@ -26,7 +26,7 @@ object ConfigurationsService {
 			}
 		}
 
-		logger.debug("Using configurations:\n${Json.encodeToString(configurations)}")
+		logger.debug("Loaded configurations:\n${Json.encodeToString(configurations)}")
 
 		return configurations!!
 	}
