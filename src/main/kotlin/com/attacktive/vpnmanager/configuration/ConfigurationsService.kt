@@ -1,6 +1,7 @@
 package com.attacktive.vpnmanager.configuration
 
 import java.io.FileNotFoundException
+import java.nio.file.Path
 import java.nio.file.Paths
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory
 
 object ConfigurationsService {
 	private const val CONFIGURATIONS_FILE_NAME = "default-configurations.json"
+	private const val CUSTOM_CONFIGURATIONS_FILE_NAME = "configurations.json"
 
 	private val logger = LoggerFactory.getLogger(ConfigurationsService::class.java)
 
@@ -38,21 +40,60 @@ object ConfigurationsService {
 	}
 
 	private fun getCustomConfigurations(): NullableConfigurations? {
-		// FIXME: hacky workaround to get the 'resources' directory
-		val resource = ConfigurationsService::class.java.classLoader.getResource("")
-		val classpathRoot = Paths.get(resource!!.toURI()).toFile()
-		val kotlin = classpathRoot.parentFile
-		val classes = kotlin.parentFile
-		val build = classes.parentFile
-		val resources = build.listFiles()!!.firstOrNull { it.isDirectory && it.name.equals("resources") }
-		val main = resources?.listFiles()!!.firstOrNull { it.isDirectory && it.name.equals("main") }
+		val configurationsDirectory = getCustomConfigurationsPath().toFile()
+		val appConfigurationsDirectory = Paths.get(configurationsDirectory.absolutePath, "vpn-manager").toFile()
 
-		return main?.listFiles()!!
-			.filter { !it.name.equals(CONFIGURATIONS_FILE_NAME) }
-			.filter { it.extension.equals("json", true) }
-			.firstNotNullOfOrNull {
-				logger.debug("Custom configuration file \"$it\" is chosen.")
-				Json.decodeFromString(it.readText())
+		if (appConfigurationsDirectory.exists() && appConfigurationsDirectory.isDirectory) {
+			return appConfigurationsDirectory.listFiles()!!
+				.sortedWith { left, right ->
+					when {
+						left.name.equals(right.name) -> 0
+						left.name.equals(CUSTOM_CONFIGURATIONS_FILE_NAME) -> -1
+						right.name.equals(CUSTOM_CONFIGURATIONS_FILE_NAME) -> 1
+						else -> left.name.compareTo(right.name)
+					}
+				}
+				.filter { it.extension.equals("json", true) }
+				.firstNotNullOfOrNull {
+					logger.debug("Custom configuration file \"$it\" is chosen.")
+					Json.decodeFromString(it.readText())
+				}
+		}
+
+		appConfigurationsDirectory.mkdirs()
+		return null
+	}
+
+	private fun getCustomConfigurationsPath(): Path {
+		val os = System.getProperty("os.name")
+		val home = System.getProperty("user.home")
+
+		val config = if (os.contains("Mac")) {
+			Paths.get(home, "Library", "Application Support")
+		} else if (os.contains("Windows")) {
+			getPathFromEnv("APPDATA", false, Paths.get(home, "AppData", "Roaming"))
+		} else {
+			getPathFromEnv("XDG_CONFIG_HOME", true, Paths.get(home, ".config"))
+		}
+
+		return config
+	}
+
+	private fun getPathFromEnv(envName: String, needsToBeAbsolute: Boolean, defaultPath: Path): Path {
+		var path: Path
+		val envValue = System.getenv(envName)
+		if (envValue.isNullOrEmpty()) {
+			path = defaultPath
+			logger.info("$envName is not defined in env; falling back on \"$path\"")
+		} else {
+			path = Paths.get(envValue)
+
+			if (needsToBeAbsolute && !path.isAbsolute) {
+				path = defaultPath
+				logger.info("$envName is not an absolute path; falling back on \"$path\"")
 			}
+		}
+
+		return path
 	}
 }
