@@ -19,18 +19,18 @@ class MudfishServiceTest {
 		val name = "test-site"
 		val testUrl = "http://localhost"
 		val enabled = true
-		val iid = "iid"
-		val rid = "rid"
+		val iid = "iid-1"
+		val rid = "rid-1"
 
 		val mudfishItem = MudfishItem(name, testUrl, enabled, iid, rid)
 
 		Mockito.`when`(mockConfigurationsService.getConfigurations())
 			.thenReturn(
 				Configurations(
-					"0 0 * * * ?",
+					"0 0 0 * * ?",
 					"30s",
 					"http://toggle.vpn",
-					"random-token",
+					"random-token-1",
 					listOf(mudfishItem)
 				)
 			)
@@ -50,8 +50,8 @@ class MudfishServiceTest {
 		val name = "test-site"
 		val testUrl = "http://localhost"
 		val enabled = false
-		val iid = "iid"
-		val rid = "rid"
+		val iid = "iid-2"
+		val rid = "rid-2"
 
 		val mudfishItem = MudfishItem(name, testUrl, enabled, iid, rid)
 
@@ -59,9 +59,9 @@ class MudfishServiceTest {
 			.thenReturn(
 				Configurations(
 					"0 0 * * * ?",
-					"30s",
+					"2m",
 					"http://toggle.vpn",
-					"random-token",
+					"random-token-2",
 					listOf(mudfishItem)
 				)
 			)
