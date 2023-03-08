@@ -14,15 +14,20 @@ object MudfishService {
 	private val logger = LoggerFactory.getLogger(MudfishService::class.java)
 	private val configurations = ConfigurationsService.getConfigurations()
 
-	fun turnOn(mudfishItem: MudfishItem) {
-		turnOnOrOffMudfish(mudfishItem, true)
+	fun turnOn(mudfishItem: MudfishItem): Boolean {
+		return turnOnOrOffMudfish(mudfishItem, true)
 	}
 
-	fun turnOff(mudfishItem: MudfishItem) {
-		turnOnOrOffMudfish(mudfishItem, false)
+	fun turnOff(mudfishItem: MudfishItem): Boolean {
+		return turnOnOrOffMudfish(mudfishItem, false)
 	}
 
-	private fun turnOnOrOffMudfish(mudfishItem: MudfishItem, toTurnOn: Boolean) {
+	private fun turnOnOrOffMudfish(mudfishItem: MudfishItem, toTurnOn: Boolean): Boolean {
+		if (!mudfishItem.enabled) {
+			logger.info("The item $mudfishItem is disabled; keeping it as-is.")
+			return false
+		}
+
 		val httpRequest = HttpRequest.newBuilder(URI(configurations.vpnToggleUrl))
 			.header("Authorization", configurations.authorization)
 			.header("Content-Type", "application/json;charset=UTF-8")
@@ -43,5 +48,7 @@ object MudfishService {
 		if (!success) {
 			logger.error("Failed to ${if (toTurnOn) "start" else "stop"} the VPN for \"${mudfishItem.name}\".")
 		}
+
+		return success
 	}
 }
