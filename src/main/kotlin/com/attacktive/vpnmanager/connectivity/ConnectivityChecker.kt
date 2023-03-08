@@ -5,16 +5,17 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodySubscribers
-import java.time.Duration
+import com.attacktive.vpnmanager.configuration.ConfigurationsService
 import com.attacktive.vpnmanager.configuration.MudfishItem
 import org.slf4j.LoggerFactory
 
 object ConnectivityChecker {
 	private val logger = LoggerFactory.getLogger(ConnectivityChecker::class.java)
+	private val configurations = ConfigurationsService.getConfigurations()
 
-	fun needsVpn(testTimeoutDuration: Duration, mudfishItem: MudfishItem): Boolean {
+	fun needsVpn(mudfishItem: MudfishItem): Boolean {
 		val httpRequest = HttpRequest.newBuilder(URI(mudfishItem.testUrl))
-			.timeout(testTimeoutDuration)
+			.timeout(configurations.testTimeoutDuration())
 			.GET()
 			.build()
 

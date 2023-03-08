@@ -14,7 +14,7 @@ class VpnManagingJob: Job {
 	override fun execute(context: JobExecutionContext) {
 		configurations.mudfishItems.forEach {
 			MudfishService.turnOff(it)
-			val needsVpn = ConnectivityChecker.needsVpn(configurations.testTimeoutDuration(), it)
+			val needsVpn = ConnectivityChecker.needsVpn(it)
 			logger.debug("needsVpn: $needsVpn")
 
 			if (needsVpn) {
