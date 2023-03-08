@@ -7,9 +7,9 @@ import kotlin.test.assertEquals
 class ConfigurationsTest {
 	@Test
 	fun testMergeWithMudfishItems() {
-		val default = Configurations("source", "100h", "source", "source", listOf(MudfishItem("source", "source", "source", "source")))
+		val default = Configurations("source", "100h", "source", "source", listOf(MudfishItem("source", "source", false, "source", "source")))
 
-		val custom = NullableConfigurations(null, null, null, null, listOf(MudfishItem("custom", "custom", "custom", "custom")))
+		val custom = NullableConfigurations(null, null, null, null, listOf(MudfishItem("custom", "custom", true, "custom", "custom")))
 
 		val merged = default.mergeWith(custom)
 		println("merged: $merged")
@@ -18,12 +18,12 @@ class ConfigurationsTest {
 		assertEquals("100h", merged.testTimeout)
 		assertEquals("source", merged.vpnToggleUrl)
 		assertEquals("source", merged.authorization)
-		assertContentEquals(listOf(MudfishItem("custom", "custom", "custom", "custom")), merged.mudfishItems)
+		assertContentEquals(listOf(MudfishItem("custom", "custom", true, "custom", "custom")), merged.mudfishItems)
 	}
 
 	@Test
 	fun testMergeOverwriting() {
-		val default = Configurations("source", "100h", "source", "source", listOf(MudfishItem("source", "source", "source", "source")))
+		val default = Configurations("source", "100h", "source", "source", listOf(MudfishItem("source", "source", false, "source", "source")))
 
 		val custom = NullableConfigurations("custom", "1s", "custom", "custom")
 
@@ -34,6 +34,6 @@ class ConfigurationsTest {
 		assertEquals("1s", merged.testTimeout)
 		assertEquals("custom", merged.vpnToggleUrl)
 		assertEquals("custom", merged.authorization)
-		assertContentEquals(listOf(MudfishItem("source", "source", "source", "source")), merged.mudfishItems)
+		assertContentEquals(listOf(MudfishItem("source", "source", false, "source", "source")), merged.mudfishItems)
 	}
 }

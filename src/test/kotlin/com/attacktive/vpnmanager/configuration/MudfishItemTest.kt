@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 class MudfishItemTest {
 	@Test
 	fun test() {
-		val mudfishItem = MudfishItem("doesn't matter", "whatever", "iid", "rid")
+		val mudfishItem = MudfishItem("doesn't matter", "whatever", false, "iid", "rid")
 		val toggleRequestBody = mudfishItem.getToggleRequestBody(true)
 
 		assertEquals(
