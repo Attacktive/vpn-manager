@@ -12,6 +12,10 @@ class VpnManagingJob: Job {
 	private val configurations = ConfigurationsService.getConfigurations()
 
 	override fun execute(context: JobExecutionContext) {
+		executeWithoutContext()
+	}
+
+	fun executeWithoutContext() {
 		configurations.mudfishItems.forEach {
 			MudfishService.turnOff(it)
 			val needsVpn = ConnectivityChecker.needsVpn(it)
