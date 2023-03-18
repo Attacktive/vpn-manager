@@ -17,13 +17,11 @@ object ConfigurationsService {
 	private var configurations: Configurations? = null
 
 	fun getConfigurations(): Configurations {
-		if (configurations == null) {
-			configurations = getDefaultConfigurations()
+		configurations = getDefaultConfigurations()
 
-			val customConfigurations = getCustomConfigurations()
-			if (customConfigurations != null) {
-				configurations = configurations!!.mergeWith(customConfigurations)
-			}
+		val customConfigurations = getCustomConfigurations()
+		if (customConfigurations != null) {
+			configurations = configurations!!.mergeWith(customConfigurations)
 		}
 
 		logger.debug("Loaded configurations:\n${Json.encodeToString(configurations)}")
