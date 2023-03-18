@@ -3,6 +3,7 @@ package com.attacktive.vpnmanager.configuration
 import java.io.FileNotFoundException
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.absolutePathString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -29,6 +30,21 @@ object ConfigurationsService {
 		return configurations!!
 	}
 
+	fun getCustomConfigurationsPath(): Path {
+		val os = System.getProperty("os.name")
+		val home = System.getProperty("user.home")
+
+		val config = if (os.contains("Mac")) {
+			Paths.get(home, "Library", "Application Support")
+		} else if (os.contains("Windows")) {
+			getPathFromEnv("APPDATA", false, Paths.get(home, "AppData", "Roaming"))
+		} else {
+			getPathFromEnv("XDG_CONFIG_HOME", true, Paths.get(home, ".config"))
+		}
+
+		return Paths.get(config.absolutePathString(), "vpn-manager")
+	}
+
 	private fun getDefaultConfigurations(): Configurations {
 		val resource = ConfigurationsService::class.java.classLoader.getResource(CONFIGURATIONS_FILE_NAME) ?: throw FileNotFoundException("File $CONFIGURATIONS_FILE_NAME does not exist; returning the default which surely won't work.")
 
@@ -39,10 +55,9 @@ object ConfigurationsService {
 
 	private fun getCustomConfigurations(): NullableConfigurations? {
 		val configurationsDirectory = getCustomConfigurationsPath().toFile()
-		val appConfigurationsDirectory = Paths.get(configurationsDirectory.absolutePath, "vpn-manager").toFile()
 
-		if (appConfigurationsDirectory.exists() && appConfigurationsDirectory.isDirectory) {
-			return appConfigurationsDirectory.listFiles()!!
+		if (configurationsDirectory.exists() && configurationsDirectory.isDirectory) {
+			return configurationsDirectory.listFiles()!!
 				.sortedWith { left, right ->
 					when {
 						left.name.equals(right.name) -> 0
@@ -58,23 +73,8 @@ object ConfigurationsService {
 				}
 		}
 
-		appConfigurationsDirectory.mkdirs()
+		configurationsDirectory.mkdirs()
 		return null
-	}
-
-	private fun getCustomConfigurationsPath(): Path {
-		val os = System.getProperty("os.name")
-		val home = System.getProperty("user.home")
-
-		val config = if (os.contains("Mac")) {
-			Paths.get(home, "Library", "Application Support")
-		} else if (os.contains("Windows")) {
-			getPathFromEnv("APPDATA", false, Paths.get(home, "AppData", "Roaming"))
-		} else {
-			getPathFromEnv("XDG_CONFIG_HOME", true, Paths.get(home, ".config"))
-		}
-
-		return config
 	}
 
 	private fun getPathFromEnv(envName: String, needsToBeAbsolute: Boolean, defaultPath: Path): Path {
@@ -82,13 +82,13 @@ object ConfigurationsService {
 		val envValue = System.getenv(envName)
 		if (envValue.isNullOrEmpty()) {
 			path = defaultPath
-			logger.info("$envName is not defined in env; falling back on \"$path\"")
+			logger.debug("$envName is not defined in env; falling back on \"$path\"")
 		} else {
 			path = Paths.get(envValue)
 
 			if (needsToBeAbsolute && !path.isAbsolute) {
 				path = defaultPath
-				logger.info("$envName is not an absolute path; falling back on \"$path\"")
+				logger.debug("$envName is not an absolute path; falling back on \"$path\"")
 			}
 		}
 
