@@ -7,7 +7,7 @@ import com.attacktive.vpnmanager.scheduler.SchedulerService
 fun main() {
 	SchedulerService.setup().start()
 
-	ConfigurationsWatchService.watch { VpnManagingJob().executeOutOfNowhere() }
+	ConfigurationsWatchService.watchAndExecute { VpnManagingJob().executeOutOfNowhere() }
 
 	VpnManagingJob().executeOutOfNowhere()
 }
