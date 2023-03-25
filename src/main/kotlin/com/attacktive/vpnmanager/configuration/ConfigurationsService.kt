@@ -14,6 +14,7 @@ object ConfigurationsService {
 	private const val CUSTOM_CONFIGURATIONS_FILE_NAME = "configurations.json"
 
 	private val logger = LoggerFactory.getLogger(ConfigurationsService::class.java)
+	private val json = Json { ignoreUnknownKeys = true }
 
 	private var configurations: Configurations? = null
 
@@ -69,7 +70,7 @@ object ConfigurationsService {
 				.filter { it.extension.equals("json", true) }
 				.firstNotNullOfOrNull {
 					logger.debug("Custom configuration file \"$it\" is chosen.")
-					Json.decodeFromString(it.readText())
+					json.decodeFromString(it.readText())
 				}
 		}
 
