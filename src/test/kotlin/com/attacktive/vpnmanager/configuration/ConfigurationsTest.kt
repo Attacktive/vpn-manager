@@ -7,10 +7,10 @@ import kotlin.test.assertEquals
 class ConfigurationsTest {
 	@Test
 	fun testMergeWithMudfishItems() {
-		val sourceMudfishItems = listOf(MudfishItem("source-name-1", "source-test-url-1", false, "source-iid-1", "source-rid-1"))
+		val sourceMudfishItems = listOf(MudfishItem("source-name-1", "source-test-url-1", enabled = false, iid = "source-iid-1", rid = "source-rid-1"))
 		val default = Configurations("source-cron-1", "100h", "source-toggle-1", "source-authorization-1", sourceMudfishItems)
 
-		val customMudfishItems = listOf(MudfishItem("custom-name-1", "custom-test-url-1", true, "custom-iid", "custom-rid"))
+		val customMudfishItems = listOf(MudfishItem("custom-name-1", "custom-test-url-1", enabled = true, iid = "custom-iid", rid = "custom-rid"))
 		val custom = NullableConfigurations(null, null, null, null, customMudfishItems)
 
 		val merged = default.mergeWith(custom)
@@ -25,7 +25,7 @@ class ConfigurationsTest {
 
 	@Test
 	fun testMergeOverwriting() {
-		val sourceMudfishItems = listOf(MudfishItem("source-name", "source-test-url", false, "source-iid", "source-rid"))
+		val sourceMudfishItems = listOf(MudfishItem("source-name", "source-test-url", enabled = false, iid = "source-iid", rid = "source-rid"))
 		val default = Configurations("source-cron-2", "100h", "source-toggle-2", "source-authorization-2", sourceMudfishItems)
 
 		val custom = NullableConfigurations("custom-cron-2", "1s", "custom-toggle-2", "custom-auth-2")

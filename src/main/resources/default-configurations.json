@@ -13,7 +13,7 @@
 		},
 		{
 			"name": "jetbrains.com",
-			"testUrl": "https://youtrack.jetbrains.com/",
+			"testUrls": ["https://youtrack.jetbrains.com/", "https://account.jetbrains.com"],
 			"iid": "fixme:200009",
 			"rid": "fixme:1000000"
 		},

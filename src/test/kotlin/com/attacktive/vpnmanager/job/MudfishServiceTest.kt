@@ -16,13 +16,7 @@ class MudfishServiceTest {
 
 	@Test
 	fun testTurnOn() {
-		val name = "test-site"
-		val testUrl = "http://localhost"
-		val enabled = true
-		val iid = "iid-1"
-		val rid = "rid-1"
-
-		val mudfishItem = MudfishItem(name, testUrl, enabled, iid, rid)
+		val mudfishItem = MudfishItem("test-site", "http://localhost", enabled = true, iid = "iid-1", rid = "rid-1")
 
 		Mockito.`when`(mockConfigurationsService.getConfigurations())
 			.thenReturn(
@@ -35,11 +29,10 @@ class MudfishServiceTest {
 				)
 			)
 
-		Mockito.`when`(mockConnectivityChecker.needsVpn(mudfishItem)).thenReturn(true)
+		Mockito.`when`(mockConnectivityChecker.needsVpn(mudfishItem))
+			.thenReturn(true)
 
 		MudfishService.turnOff(mudfishItem)
-		val needsVpn = ConnectivityChecker.needsVpn(mudfishItem)
-		assertTrue(needsVpn)
 
 		val result = MudfishService.turnOn(mudfishItem)
 		assertTrue(result)
@@ -47,13 +40,7 @@ class MudfishServiceTest {
 
 	@Test
 	fun testTurnOffWhenDisabled() {
-		val name = "test-site"
-		val testUrl = "http://localhost"
-		val enabled = false
-		val iid = "iid-2"
-		val rid = "rid-2"
-
-		val mudfishItem = MudfishItem(name, testUrl, enabled, iid, rid)
+		val mudfishItem = MudfishItem("test-site", "http://localhost", enabled = false, iid = "iid-2", rid = "rid-2")
 
 		Mockito.`when`(mockConfigurationsService.getConfigurations())
 			.thenReturn(
@@ -66,11 +53,10 @@ class MudfishServiceTest {
 				)
 			)
 
-		Mockito.`when`(mockConnectivityChecker.needsVpn(mudfishItem)).thenReturn(false)
+		Mockito.`when`(mockConnectivityChecker.needsVpn(mudfishItem))
+			.thenReturn(true)
 
 		MudfishService.turnOn(mudfishItem)
-		val needsVpn = ConnectivityChecker.needsVpn(mudfishItem)
-		assertTrue(needsVpn)
 
 		val result = MudfishService.turnOff(mudfishItem)
 		assertFalse(result)

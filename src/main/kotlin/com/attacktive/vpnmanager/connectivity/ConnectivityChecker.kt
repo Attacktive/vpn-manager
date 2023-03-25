@@ -14,21 +14,28 @@ object ConnectivityChecker {
 	private val configurations = ConfigurationsService.getConfigurations()
 
 	fun needsVpn(mudfishItem: MudfishItem): Boolean {
-		val httpRequest = HttpRequest.newBuilder(URI(mudfishItem.testUrl))
-			.timeout(configurations.testTimeoutDuration())
-			.GET()
-			.build()
+		mudfishItem.getUrlsToTest()
+			.forEach {
+				val httpRequest = HttpRequest.newBuilder(URI(it))
+					.timeout(configurations.testTimeoutDuration())
+					.GET()
+					.build()
 
-		return try {
-			val statusCode = HttpClient.newHttpClient()
-				.send(httpRequest) { BodySubscribers.discarding() }
-				.statusCode()
+				try {
+					val statusCode = HttpClient.newHttpClient()
+						.send(httpRequest) { BodySubscribers.discarding() }
+						.statusCode()
 
-			logger.debug("statusCode: $statusCode")
-			statusCode >= 400
-		} catch (e: IOException) {
-			logger.info("${e.message} reaching ${mudfishItem.testUrl}")
-			true
-		}
+					logger.debug("statusCode: $statusCode")
+
+					if (statusCode >= 400) {
+						return true
+					}
+				} catch (e: IOException) {
+					logger.info("${e.message} reaching $it")
+				}
+			}
+
+		return false
 	}
 }
