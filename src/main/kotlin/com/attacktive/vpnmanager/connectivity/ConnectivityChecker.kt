@@ -33,6 +33,7 @@ object ConnectivityChecker {
 					}
 				} catch (e: IOException) {
 					logger.info("${e.message} reaching $it")
+					return true
 				}
 			}
 
