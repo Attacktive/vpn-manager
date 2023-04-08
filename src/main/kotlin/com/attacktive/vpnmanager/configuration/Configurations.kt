@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-data class Configurations(val cronExpression: String, val testTimeout: String, val vpnToggleUrl: String, val authorization: String, val mudfishItems: List<MudfishItem>) {
+data class Configurations(val cronExpression: String, val testTimeout: String, val vpnToggleUrl: String, val mudfishGraphqlUrl: String = "https://api.mudfish.net/graphql", val authorization: String, val mudfishItems: List<MudfishItem>) {
 	@Transient
 	private var number = -1L
 
@@ -25,10 +25,11 @@ data class Configurations(val cronExpression: String, val testTimeout: String, v
 		val cronExpression = other.cronExpression ?: this.cronExpression
 		val testTimeout = other.testTimeout ?: this.testTimeout
 		val vpnToggleUrl = other.vpnToggleUrl ?: this.vpnToggleUrl
+		val mudfishGraphqlUrl = other.mudfishGraphqlUrl ?: this.mudfishGraphqlUrl
 		val authorization = other.authorization ?: this.authorization
 		val mudfishItems = other.mudfishItems.ifEmpty { this.mudfishItems }
 
-		return Configurations(cronExpression, testTimeout, vpnToggleUrl, authorization, mudfishItems)
+		return Configurations(cronExpression, testTimeout, vpnToggleUrl, mudfishGraphqlUrl, authorization, mudfishItems)
 	}
 
 	private fun validate(string: String): Pair<Long, ChronoUnit> {

@@ -19,13 +19,11 @@ class VpnManagingJob: Job {
 		configurations.mudfishItems.forEach {
 			MudfishService.turnOff(it)
 			val needsVpn = ConnectivityChecker.needsVpn(it)
-			logger.debug("needsVpn: $needsVpn")
-
 			if (needsVpn) {
-				logger.info("[${it.name}]Seems like you need to connect to the VPN. 😿")
+				logger.info("[${it.name}] Seems like you need to connect to the VPN. 😿")
 				MudfishService.turnOn(it)
 			} else {
-				logger.info("[${it.name}]You don't need the VPN for now. 👍")
+				logger.info("[${it.name}] You don't need the VPN for now. 👍")
 			}
 		}
 	}

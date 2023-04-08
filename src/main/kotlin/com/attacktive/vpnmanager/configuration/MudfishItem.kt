@@ -11,7 +11,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MudfishItem(val name: String, private val testUrl: String? = null, private val testUrls: Set<String> = setOf(), val enabled: Boolean = true, val iid: String, val rid: String) {
 	init {
-		require(getUrlsToTest().isNotEmpty()) { "You must provide at least one URL for \"$name\"." }
 		require(iid.isNotBlank()) { "You must provide a valid iid for \"$name\"." }
 		require(rid.isNotBlank()) { "You must provide a valid rid for \"$name\"." }
 	}

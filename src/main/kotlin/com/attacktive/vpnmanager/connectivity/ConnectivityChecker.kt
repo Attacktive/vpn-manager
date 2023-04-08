@@ -7,6 +7,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodySubscribers
 import com.attacktive.vpnmanager.configuration.ConfigurationsService
 import com.attacktive.vpnmanager.configuration.MudfishItem
+import com.attacktive.vpnmanager.mudfish.MudfishService
 import org.slf4j.LoggerFactory
 
 object ConnectivityChecker {
@@ -14,28 +15,32 @@ object ConnectivityChecker {
 	private val configurations = ConfigurationsService.getConfigurations()
 
 	fun needsVpn(mudfishItem: MudfishItem): Boolean {
-		mudfishItem.getUrlsToTest()
-			.forEach {
-				val httpRequest = HttpRequest.newBuilder(URI(it))
-					.timeout(configurations.testTimeoutDuration())
-					.GET()
-					.build()
+		var urlsToTest = mudfishItem.getUrlsToTest()
+		if (urlsToTest.isEmpty()) {
+			urlsToTest = MudfishService.getUrlsToTest(mudfishItem.iid)
+		}
 
-				try {
-					val statusCode = HttpClient.newHttpClient()
-						.send(httpRequest) { BodySubscribers.discarding() }
-						.statusCode()
+		urlsToTest.forEach {
+			val httpRequest = HttpRequest.newBuilder(URI(it))
+				.timeout(configurations.testTimeoutDuration())
+				.GET()
+				.build()
 
-					logger.debug("statusCode: $statusCode")
+			try {
+				val statusCode = HttpClient.newHttpClient()
+					.send(httpRequest) { BodySubscribers.discarding() }
+					.statusCode()
 
-					if (statusCode >= 400) {
-						return true
-					}
-				} catch (e: IOException) {
-					logger.info("${e.message} reaching $it")
+				logger.debug("$it: $statusCode")
+
+				if (statusCode >= 400) {
 					return true
 				}
+			} catch (ioException: IOException) {
+				logger.info("${ioException.message ?: ioException.javaClass.name} reaching $it")
+				return true
 			}
+		}
 
 		return false
 	}

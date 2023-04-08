@@ -24,6 +24,7 @@ class MudfishServiceTest {
 					"0 0 0 * * ?",
 					"30s",
 					"http://toggle.vpn",
+					"https://api.mudfish.net/graphql",
 					"random-token-1",
 					listOf(mudfishItem)
 				)
@@ -48,6 +49,7 @@ class MudfishServiceTest {
 					"0 0 * * * ?",
 					"2m",
 					"http://toggle.vpn",
+					"https://api.mudfish.net/graphql",
 					"random-token-2",
 					listOf(mudfishItem)
 				)
