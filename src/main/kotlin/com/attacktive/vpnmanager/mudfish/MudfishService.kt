@@ -6,12 +6,18 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse
+import java.nio.charset.StandardCharsets
 import com.attacktive.vpnmanager.configuration.ConfigurationsService
 import com.attacktive.vpnmanager.configuration.MudfishItem
+import com.attacktive.vpnmanager.connectivity.ErrorsResponseDto
+import com.attacktive.vpnmanager.connectivity.MudfishItemResponseDto
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 
 object MudfishService {
 	private val logger = LoggerFactory.getLogger(MudfishService::class.java)
+	private val json = Json { ignoreUnknownKeys = true }
 	private val configurations = ConfigurationsService.getConfigurations()
 
 	fun turnOn(mudfishItem: MudfishItem): Boolean {
@@ -50,5 +56,54 @@ object MudfishService {
 		}
 
 		return success
+	}
+
+	fun getUrlsToTest(iid: String): Set<String> {
+		val query = """
+			{
+				"query": "${
+			"query CustomItemConf(${"$"}iid: Int!) {" +
+				"  user {" +
+				"    item(iid: ${"$"}iid) {" +
+				"      categoryId" +
+				"      iid" +
+				"      iconPath" +
+				"      iconUri" +
+				"      name" +
+				"      rtList" +
+				"      destinations {" +
+				"        rid" +
+				"        location" +
+				"        ip" +
+				"        isPrivate" +
+				"      }" +
+				"    }" +
+				"  }" +
+				"}"
+		}",
+				"variables": {
+					"iid": "$iid"
+				}
+			}
+		""".trimIndent()
+
+		val httpRequest = HttpRequest.newBuilder(URI(configurations.mudfishGraphqlUrl))
+			.header("Authorization", configurations.authorization)
+			.header("Content-Type", "application/json;charset=UTF-8")
+			.POST(BodyPublishers.ofString(query))
+			.build()
+
+		val httpResponse = HttpClient.newHttpClient()
+			.send(httpRequest) { HttpResponse.BodySubscribers.ofString(StandardCharsets.UTF_8) }
+
+		val statusCode = httpResponse.statusCode()
+		val responseJson = httpResponse.body()
+		if (statusCode >= 400) {
+			val errors: ErrorsResponseDto = json.decodeFromString(responseJson)
+			throw RuntimeException(errors.mergedMessages)
+		}
+
+		val mudfishItemResponseDto: MudfishItemResponseDto = json.decodeFromString(responseJson)
+		return mudfishItemResponseDto.routingUrlSet
 	}
 }
