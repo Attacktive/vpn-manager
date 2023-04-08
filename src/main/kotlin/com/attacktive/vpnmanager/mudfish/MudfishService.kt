@@ -100,7 +100,7 @@ object MudfishService {
 		val responseJson = httpResponse.body()
 		if (statusCode >= 400) {
 			val errors: ErrorsResponseDto = json.decodeFromString(responseJson)
-			throw RuntimeException(errors.mergedMessages)
+			throw IllegalArgumentException("query: ${query}\n${errors.messages.joinToString("\n")}")
 		}
 
 		val mudfishItemResponseDto: MudfishItemResponseDto = json.decodeFromString(responseJson)
