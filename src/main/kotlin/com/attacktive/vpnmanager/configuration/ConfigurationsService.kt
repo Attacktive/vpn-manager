@@ -4,6 +4,8 @@ import java.io.FileNotFoundException
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.absolutePathString
+import kotlin.system.exitProcess
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -70,7 +72,12 @@ object ConfigurationsService {
 				.filter { it.extension.equals("json", true) }
 				.firstNotNullOfOrNull {
 					logger.debug("Custom configuration file \"$it\" is chosen.")
-					json.decodeFromString(it.readText())
+					try {
+						json.decodeFromString(it.readText())
+					} catch (serializationException: SerializationException) {
+						logger.error(serializationException.message, serializationException)
+						exitProcess(1)
+					}
 				}
 		}
 
