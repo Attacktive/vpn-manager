@@ -33,13 +33,13 @@ tasks.withType<KotlinCompile> {
 	}
 }
 
-tasks.withType<Jar> {
+tasks.jar {
 	manifest {
 		attributes["Main-Class"] = "com.attacktive.vpnmanager.MainKt"
 	}
 }
 
-tasks.withType<Test> {
+tasks.test {
 	useJUnitPlatform()
 }
 

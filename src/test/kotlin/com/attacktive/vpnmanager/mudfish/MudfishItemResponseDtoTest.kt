@@ -1,4 +1,4 @@
-package com.attacktive.vpnmanager.connectivity
+package com.attacktive.vpnmanager.mudfish
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -9,7 +9,7 @@ class MudfishItemResponseDtoTest {
 		val mudfishItemResponseDto = MudfishItemResponseDto(
 			MudfishItemResponseDto.Data(
 				MudfishItemResponseDto.Data.User(
-					MudfishItemResponseDto.Data.User.Item(666, "127.0.0.1/32")
+					MudfishItemResponseDto.Data.User.Item(666, "localhost", "127.0.0.1/32")
 				)
 			)
 		)
@@ -22,7 +22,7 @@ class MudfishItemResponseDtoTest {
 		val mudfishItemResponseDto = MudfishItemResponseDto(
 			MudfishItemResponseDto.Data(
 				MudfishItemResponseDto.Data.User(
-					MudfishItemResponseDto.Data.User.Item(666, "127.0.0.1/32\r\n\r\n192.168.0.1/18")
+					MudfishItemResponseDto.Data.User.Item(666, "localhost", "127.0.0.1/32\r\n\r\n192.168.0.1/18")
 				)
 			)
 		)
@@ -35,7 +35,7 @@ class MudfishItemResponseDtoTest {
 		val mudfishItemResponseDto = MudfishItemResponseDto(
 			MudfishItemResponseDto.Data(
 				MudfishItemResponseDto.Data.User(
-					MudfishItemResponseDto.Data.User.Item(666, "youtrack.jetbrains.com")
+					MudfishItemResponseDto.Data.User.Item(666, "Jetbrains", "youtrack.jetbrains.com")
 				)
 			)
 		)
@@ -48,7 +48,7 @@ class MudfishItemResponseDtoTest {
 		val mudfishItemResponseDto = MudfishItemResponseDto(
 			MudfishItemResponseDto.Data(
 				MudfishItemResponseDto.Data.User(
-					MudfishItemResponseDto.Data.User.Item(666, "http://jetbrains.com\r\nyoutrack.jetbrains.com")
+					MudfishItemResponseDto.Data.User.Item(666, "Jetbrains", "http://jetbrains.com\r\nyoutrack.jetbrains.com")
 				)
 			)
 		)

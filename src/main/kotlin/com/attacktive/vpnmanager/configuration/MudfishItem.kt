@@ -3,7 +3,7 @@ package com.attacktive.vpnmanager.configuration
 import kotlinx.serialization.Serializable
 
 /**
-	* @param testUrl A URL to test if the connection to the target site is live.
+ * @param testUrl A URL to test if the connection to the target site is live.
  * Takes priority over [testUrls] if provided.
  * @param testUrls URLs to test if the connection to the target site is live.
  * Gets ignored if [testUrl] is provided.

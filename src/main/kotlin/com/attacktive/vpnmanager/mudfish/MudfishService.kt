@@ -10,8 +10,7 @@ import java.nio.charset.StandardCharsets
 import com.attacktive.vpnmanager.configuration.ConfigurationsService
 import com.attacktive.vpnmanager.configuration.MudfishItem
 import com.attacktive.vpnmanager.connectivity.ErrorsResponseDto
-import com.attacktive.vpnmanager.connectivity.MudfishItemResponseDto
-import kotlinx.serialization.decodeFromString
+
 import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 
@@ -20,13 +19,29 @@ object MudfishService {
 	private val json = Json { ignoreUnknownKeys = true }
 	private val configurations = ConfigurationsService.getConfigurations()
 
-	fun turnOn(mudfishItem: MudfishItem): Boolean {
-		return turnOnOrOffMudfish(mudfishItem, true)
+	fun retrieveItems(): List<OwnedMudfishItems> {
+		val graphQL = """
+			{
+				user {
+					items {
+						iid
+						rid
+						name
+					}
+				}
+			}""".trimIndent()
+
+		val query = "{\"query\": \"$graphQL\" }"
+			.replace(Regex("\\s+"), " ")
+
+		val mudfishItemResponseDto = requestGraphql<MudfishItemsResponseDto>(query)
+
+		return mudfishItemResponseDto.items()
 	}
 
-	fun turnOff(mudfishItem: MudfishItem): Boolean {
-		return turnOnOrOffMudfish(mudfishItem, false)
-	}
+	fun turnOn(mudfishItem: MudfishItem): Boolean = turnOnOrOffMudfish(mudfishItem, true)
+
+	fun turnOff(mudfishItem: MudfishItem): Boolean = turnOnOrOffMudfish(mudfishItem, false)
 
 	private fun turnOnOrOffMudfish(mudfishItem: MudfishItem, toTurnOn: Boolean): Boolean {
 		if (!mudfishItem.enabled) {
@@ -59,38 +74,43 @@ object MudfishService {
 	}
 
 	fun getUrlsToTest(iid: String): Set<String> {
+		val graphQL = """
+			query CustomItemConf(${"$"}iid: Int!) {
+				user {
+					item(iid: ${"$"}iid) {
+						categoryId
+						iid
+						name
+						rtList
+						destinations {
+							rid
+							location
+							ip
+							isPrivate
+						}
+					}
+				}
+			}""".trimIndent()
+
 		val query = """
 			{
-				"query": "${
-			"query CustomItemConf(${"$"}iid: Int!) {" +
-				"  user {" +
-				"    item(iid: ${"$"}iid) {" +
-				"      categoryId" +
-				"      iid" +
-				"      iconPath" +
-				"      iconUri" +
-				"      name" +
-				"      rtList" +
-				"      destinations {" +
-				"        rid" +
-				"        location" +
-				"        ip" +
-				"        isPrivate" +
-				"      }" +
-				"    }" +
-				"  }" +
-				"}"
-		}",
+				"query": "$graphQL",
 				"variables": {
 					"iid": "$iid"
 				}
-			}
-		""".trimIndent()
+			}""".trimIndent()
+			.replace(Regex("\\s+"), " ")
 
+		val mudfishItemResponseDto = requestGraphql<MudfishItemResponseDto>(query)
+
+		return mudfishItemResponseDto.routingUrlSet
+	}
+
+	private inline fun <reified T> requestGraphql(body: String): T {
 		val httpRequest = HttpRequest.newBuilder(URI(configurations.mudfishGraphqlUrl))
 			.header("Authorization", configurations.authorization)
 			.header("Content-Type", "application/json;charset=UTF-8")
-			.POST(BodyPublishers.ofString(query))
+			.POST(BodyPublishers.ofString(body))
 			.build()
 
 		val httpResponse = HttpClient.newHttpClient()
@@ -99,11 +119,11 @@ object MudfishService {
 		val statusCode = httpResponse.statusCode()
 		val responseJson = httpResponse.body()
 		if (statusCode >= 400) {
-			val errors: ErrorsResponseDto = json.decodeFromString(responseJson)
-			throw IllegalArgumentException("query: ${query}\n${errors.messages.joinToString("\n")}")
+			// kotlinx.serialization.json.internal.JsonDecodingException
+			val errorResponse: ErrorsResponseDto = json.decodeFromString(responseJson)
+			throw IllegalArgumentException("body: ${body}\n${errorResponse.message}")
 		}
 
-		val mudfishItemResponseDto: MudfishItemResponseDto = json.decodeFromString(responseJson)
-		return mudfishItemResponseDto.routingUrlSet
+		return json.decodeFromString(responseJson)
 	}
 }

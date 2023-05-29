@@ -1,4 +1,4 @@
-package com.attacktive.vpnmanager.connectivity
+package com.attacktive.vpnmanager.mudfish
 
 import kotlinx.serialization.Serializable
 
@@ -13,7 +13,7 @@ data class MudfishItemResponseDto(val data: Data) {
 		data class User(val item: Item) {
 			@Serializable
 			@Suppress("HttpUrlsUsage")
-			data class Item(val iid: Int, val rtList: String) {
+			data class Item(val iid: Int, val name: String, val rtList: String) {
 				val routingUrlSet: Set<String>
 					get() = rtList.split("\r", "\n")
 						.filter { it.isNotEmpty() }
