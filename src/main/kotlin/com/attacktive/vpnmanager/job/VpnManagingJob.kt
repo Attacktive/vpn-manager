@@ -16,15 +16,20 @@ class VpnManagingJob: Job {
 	}
 
 	fun executeOutOfNowhere() {
-		configurations.mudfishItems.forEach {
-			MudfishService.turnOff(it)
-			val needsVpn = ConnectivityChecker.needsVpn(it)
-			if (needsVpn) {
-				logger.info("[${it.name}] Seems like you need to connect to the VPN. 😿")
-				MudfishService.turnOn(it)
-			} else {
-				logger.info("[${it.name}] You don't need the VPN for now. 👍")
+		val ownedMudfishItems = MudfishService.retrieveItems()
+		val ownedIids = ownedMudfishItems.map { it.iid.toString() }
+
+		configurations.mudfishItems.filter { ownedIids.contains(it.iid) }
+			.filter { it.enabled }
+			.forEach {
+				MudfishService.turnOff(it)
+				val needsVpn = ConnectivityChecker.needsVpn(it)
+				if (needsVpn) {
+					logger.info("[${it.name}] Seems like you need to connect to the VPN. 😿")
+					MudfishService.turnOn(it)
+				} else {
+					logger.info("[${it.name}] You don't need the VPN for now. 👍")
+				}
 			}
-		}
 	}
 }
