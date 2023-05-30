@@ -7,23 +7,17 @@
 	"mudfishItems": [
 		{
 			"name": "atlassian.com",
-			"testUrl": "https://www.atlassian.com/",
 			"enabled": false,
-			"iid": "fixme:200000",
-			"rid": "fixme:1000000"
+			"iid": "fixme:200000"
 		},
 		{
 			"name": "jetbrains.com",
-			"testUrls": ["https://youtrack.jetbrains.com/", "https://account.jetbrains.com"],
-			"iid": "fixme:200009",
-			"rid": "fixme:1000000"
+			"iid": "fixme:200009"
 		},
 		{
 			"name": "netflix.com",
-			"testUrl": "https://www.netflix.com",
 			"enabled": true,
-			"iid": "fixme:200008",
-			"rid": "fixme:1000000"
+			"iid": "fixme:200008"
 		}
 	]
 }
