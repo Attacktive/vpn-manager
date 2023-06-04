@@ -2,7 +2,7 @@ package com.attacktive.vpnmanager.mudfish
 
 import kotlinx.serialization.Serializable
 
-typealias OwnedMudfishItems = MudfishItemsResponseDto.Data.User.Item
+typealias OwnedMudfishItem = MudfishItemsResponseDto.Data.User.Item
 
 @Serializable
 data class MudfishItemsResponseDto(private val data: Data) {
@@ -13,7 +13,14 @@ data class MudfishItemsResponseDto(private val data: Data) {
 		@Serializable
 		data class User(internal val items: List<Item>) {
 			@Serializable
-			data class Item(val iid: Int, val rid: Int, val name: String)
+			data class Item(val iid: Int, val rid: Int, val name: String) {
+				fun getToggleRequestBody(toTurnOn: Boolean) = """
+					{
+						"iid": $iid,
+						"rid": $rid,
+						"onoff": $toTurnOn
+					}""".trimIndent()
+			}
 		}
 	}
 }

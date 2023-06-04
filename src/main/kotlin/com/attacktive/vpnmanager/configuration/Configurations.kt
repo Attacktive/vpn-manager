@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-data class Configurations(val cronExpression: String, val testTimeout: String, val vpnToggleUrl: String, val mudfishGraphqlUrl: String = "https://api.mudfish.net/graphql", val authorization: String, val mudfishItems: List<MudfishItem>) {
+data class Configurations(val cronExpression: String, val testTimeout: String, val vpnToggleUrl: String, val mudfishGraphqlUrl: String = "https://api.mudfish.net/graphql", val authorization: String, val mudfishItems: List<MudfishItem> = listOf()) {
 	@Transient
 	private var number = -1L
 
