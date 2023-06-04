@@ -3,21 +3,5 @@
 	"testTimeout": "10s",
 	"vpnToggleUrl": "https://api.mudfish.net/item/conf_onoff",
 	"mudfishGraphqlUrl": "https://api.mudfish.net/graphql",
-	"authorization": "fixme:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJ1c2VybmFtZSI6ImR1bW15Iix0b2tlbiI6ImR1\nbW15In0K",
-	"mudfishItems": [
-		{
-			"name": "atlassian.com",
-			"enabled": false,
-			"iid": "fixme:200000"
-		},
-		{
-			"name": "jetbrains.com",
-			"iid": "fixme:200009"
-		},
-		{
-			"name": "netflix.com",
-			"enabled": true,
-			"iid": "fixme:200008"
-		}
-	]
+	"authorization": "fixme:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJ1c2VybmFtZSI6ImR1bW15Iix0b2tlbiI6ImR1\nbW15In0K"
 }

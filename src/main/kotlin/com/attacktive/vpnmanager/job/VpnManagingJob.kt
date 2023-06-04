@@ -16,11 +16,10 @@ class VpnManagingJob: Job {
 	}
 
 	fun executeOutOfNowhere() {
-		val ownedMudfishItems = MudfishService.retrieveItems()
-		val ownedIids = ownedMudfishItems.map { it.iid.toString() }
-
-		configurations.mudfishItems.filter { ownedIids.contains(it.iid) }
-			.filter { it.enabled }
+		MudfishService.retrieveItems()
+			.filter {
+				configurations.mudfishItems.firstOrNull { mudfishItem -> mudfishItem.iid == it.iid }?.enabled != false
+			}
 			.forEach {
 				MudfishService.turnOff(it)
 				val needsVpn = ConnectivityChecker.needsVpn(it)

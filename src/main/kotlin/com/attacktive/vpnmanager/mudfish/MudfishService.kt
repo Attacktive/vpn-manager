@@ -8,7 +8,6 @@ import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
 import com.attacktive.vpnmanager.configuration.ConfigurationsService
-import com.attacktive.vpnmanager.configuration.MudfishItem
 import com.attacktive.vpnmanager.connectivity.ErrorsResponseDto
 
 import kotlinx.serialization.json.Json
@@ -19,7 +18,7 @@ object MudfishService {
 	private val json = Json { ignoreUnknownKeys = true }
 	private val configurations = ConfigurationsService.getConfigurations()
 
-	fun retrieveItems(): List<OwnedMudfishItems> {
+	fun retrieveItems(): List<OwnedMudfishItem> {
 		val graphQL = """
 			{
 				user {
@@ -39,16 +38,20 @@ object MudfishService {
 		return mudfishItemResponseDto.items()
 	}
 
-	fun turnOn(mudfishItem: MudfishItem): Boolean = turnOnOrOffMudfish(mudfishItem, true)
+	/**
+		* @return whether the operation was successful
+	 */
+	fun turnOn(mudfishItem: OwnedMudfishItem): Boolean = turnOnOrOffMudfish(mudfishItem, true)
 
-	fun turnOff(mudfishItem: MudfishItem): Boolean = turnOnOrOffMudfish(mudfishItem, false)
+	/**
+		* @return whether the operation was successful
+	 */
+	fun turnOff(mudfishItem: OwnedMudfishItem): Boolean = turnOnOrOffMudfish(mudfishItem, false)
 
-	private fun turnOnOrOffMudfish(mudfishItem: MudfishItem, toTurnOn: Boolean): Boolean {
-		if (!mudfishItem.enabled) {
-			logger.info("The item $mudfishItem is disabled; keeping it as-is.")
-			return false
-		}
-
+	/**
+		* @return whether the operation was successful
+	 */
+	private fun turnOnOrOffMudfish(mudfishItem: OwnedMudfishItem, toTurnOn: Boolean): Boolean {
 		val httpRequest = HttpRequest.newBuilder(URI(configurations.vpnToggleUrl))
 			.header("Authorization", configurations.authorization)
 			.header("Content-Type", "application/json;charset=UTF-8")
@@ -73,7 +76,7 @@ object MudfishService {
 		return success
 	}
 
-	fun getUrlsToTest(iid: String): Set<String> {
+	fun getUrlsToTest(iid: Int): Set<String> {
 		val graphQL = """
 			query CustomItemConf(${"$"}iid: Int!) {
 				user {
