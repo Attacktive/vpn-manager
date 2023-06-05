@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.attacktive"
-version = "1.3.2"
+version = "1.3.3"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
@@ -33,13 +33,13 @@ tasks.withType<KotlinCompile> {
 	}
 }
 
-tasks.jar {
+tasks.withType<Jar> {
 	manifest {
 		attributes["Main-Class"] = "com.attacktive.vpnmanager.MainKt"
 	}
 }
 
-tasks.test {
+tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
