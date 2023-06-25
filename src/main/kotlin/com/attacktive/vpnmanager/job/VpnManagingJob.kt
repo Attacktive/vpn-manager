@@ -16,12 +16,20 @@ class VpnManagingJob: Job {
 	}
 
 	fun executeOutOfNowhere() {
+		// fixme: VPN-managing job is doing too much. ☠
 		MudfishService.retrieveItems()
-			.filter {
-				configurations.mudfishItems.firstOrNull { mudfishItem -> mudfishItem.iid == it.iid }?.enabled != false
-			}
 			.forEach {
+				val mudfishItemInConfigurations = configurations.mudfishItems.firstOrNull { mudfishItem -> mudfishItem.iid == it.iid }
+				if (mudfishItemInConfigurations?.pinned == true) {
+					return@forEach
+				}
+
 				MudfishService.turnOff(it)
+
+				if (mudfishItemInConfigurations?.enabled == false) {
+					return@forEach
+				}
+
 				val needsVpn = ConnectivityChecker.needsVpn(it)
 				if (needsVpn) {
 					logger.info("[${it.name}] Seems like you need to connect to the VPN. 😿")
