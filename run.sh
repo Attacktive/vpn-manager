@@ -1,4 +1,4 @@
-#!/usr/bin/zsh
+#!/usr/bin/env zsh
 
 pushd "${0:a:h}"
 ./build.sh
