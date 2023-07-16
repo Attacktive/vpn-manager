@@ -23,7 +23,11 @@ object ConfigurationsService {
 		configurations = getDefaultConfigurations()
 
 		val customConfigurations = getCustomConfigurations()
-		if (customConfigurations != null) {
+		if (customConfigurations == null) {
+			val customConfigurationPath = getCustomConfigurationsPath().toFile().absolutePath
+			val newCustomConfigurationFile = Paths.get(customConfigurationPath, CUSTOM_CONFIGURATIONS_FILE_NAME).toFile()
+			newCustomConfigurationFile.writeText(Json.encodeToString(configurations))
+		} else {
 			configurations = configurations!!.mergeWith(customConfigurations)
 		}
 
