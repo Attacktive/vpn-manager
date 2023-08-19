@@ -12,10 +12,10 @@ class VpnManagingJob: Job {
 	private val configurations = ConfigurationsService.getConfigurations()
 
 	override fun execute(context: JobExecutionContext) {
-		executeOutOfNowhere()
+		executeOnce()
 	}
 
-	fun executeOutOfNowhere() {
+	fun executeOnce() {
 		// fixme: VPN-managing job is doing too much. ☠
 		for (retrievedItem in MudfishService.retrieveItems()) {
 			val mudfishItemInConfigurations = configurations.mudfishItems.firstOrNull { mudfishItem -> mudfishItem.iid == retrievedItem.iid }
