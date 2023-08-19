@@ -16,7 +16,6 @@ class VpnManagingJob: Job {
 	}
 
 	fun executeOnce() {
-		// fixme: VPN-managing job is doing too much. ☠
 		for (retrievedItem in MudfishService.retrieveItems()) {
 			val mudfishItemInConfigurations = configurations.mudfishItems.firstOrNull { mudfishItem -> mudfishItem.iid == retrievedItem.iid }
 			if (mudfishItemInConfigurations?.pinned == true) {
