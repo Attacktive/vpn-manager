@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.attacktive"
-version = "1.3.6"
+version = "1.3.7"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
