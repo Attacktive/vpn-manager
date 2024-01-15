@@ -23,7 +23,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 
 	testImplementation(kotlin("test"))
-	testImplementation("org.mockito:mockito-core:5.8.0")
+	testImplementation("org.mockito:mockito-core:5.9.0")
 }
 
 tasks.withType<KotlinCompile> {
