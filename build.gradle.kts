@@ -20,7 +20,7 @@ dependencies {
 	implementation("org.slf4j:slf4j-api:2.0.13")
 	implementation("ch.qos.logback:logback-core:1.5.6")
 	implementation("ch.qos.logback:logback-classic:1.5.6")
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
 
 	testImplementation(kotlin("test"))
 	testImplementation("org.mockito:mockito-core:5.12.0")
