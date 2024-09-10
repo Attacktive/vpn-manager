@@ -19,7 +19,7 @@ dependencies {
 	implementation("org.quartz-scheduler:quartz:2.3.2")
 	implementation("org.slf4j:slf4j-api:2.0.16")
 	implementation("ch.qos.logback:logback-core:1.5.8")
-	implementation("ch.qos.logback:logback-classic:1.5.7")
+	implementation("ch.qos.logback:logback-classic:1.5.8")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.2")
 
 	testImplementation(kotlin("test"))
