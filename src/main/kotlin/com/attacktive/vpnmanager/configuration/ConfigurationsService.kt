@@ -70,7 +70,7 @@ object ConfigurationsService {
 				}
 				.filter { it.extension.equals("json", true) }
 				.firstNotNullOfOrNull {
-					logger.debug("Custom configuration file \"$it\" is chosen.")
+					logger.debug("Custom configuration file \"{}\" is chosen.", it)
 					try {
 						json.decodeFromString(it.readText())
 					} catch (serializationException: SerializationException) {
@@ -89,13 +89,13 @@ object ConfigurationsService {
 		val envValue = System.getenv(envName)
 		if (envValue.isNullOrEmpty()) {
 			path = defaultPath
-			logger.debug("$envName is not defined in env; falling back on \"$path\"")
+			logger.debug("{} is not defined in env; falling back on \"{}\"", envName, path)
 		} else {
 			path = Paths.get(envValue)
 
 			if (needsToBeAbsolute && !path.isAbsolute) {
 				path = defaultPath
-				logger.debug("$envName is not an absolute path; falling back on \"$path\"")
+				logger.debug("{} is not an absolute path; falling back on \"{}\"", envName, path)
 			}
 		}
 

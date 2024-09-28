@@ -27,7 +27,7 @@ object ConfigurationsWatchService {
 			for (event in watchKey.pollEvents()) {
 				// we only register "ENTRY_MODIFY" so the context is always a Path.
 				val changedFile = event.context() as Path
-				logger.debug("$changedFile has just been changed.")
+				logger.debug("{} has just been changed.", changedFile)
 
 				if (changedFile.pathString.endsWith(".json", true)) {
 					function()
