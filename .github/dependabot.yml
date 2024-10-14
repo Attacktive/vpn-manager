@@ -5,15 +5,21 @@
 
 version: 2
 updates:
-  - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "daily"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
+      interval: 'daily'
+      time: '00:00'
     labels:
-      - "CI/CD"
+      - 'CI/CD'
     commit-message:
-      prefix: ci
+      prefix: 'ci'
+  - package-ecosystem: 'gradle'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+      time: '00:00'
+    groups:
+      logback:
+        patterns:
+          - 'ch.qos.logback:logback-*'
