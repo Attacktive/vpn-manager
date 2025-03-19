@@ -19,8 +19,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.quartz-scheduler:quartz:2.5.0")
 	implementation("org.slf4j:slf4j-api:2.0.17")
-	implementation("ch.qos.logback:logback-core:1.5.17")
-	implementation("ch.qos.logback:logback-classic:1.5.17")
+	implementation("ch.qos.logback:logback-core:1.5.18")
+	implementation("ch.qos.logback:logback-classic:1.5.18")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
 	testImplementation(kotlin("test"))
